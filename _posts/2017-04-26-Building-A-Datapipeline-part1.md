@@ -113,9 +113,9 @@ While the task itself isnt difficult, there are various scenarios that can make 
  We wanted to split computing from storage to fix this exact problem. So we implemented a data lake in Amazon S3. 
  Below are 2 diagrams of our architecture at a high level 
  
- ![PLATFORM](https://github.com/samelamin/samelamin.github.io/blob/master/img/platform.png "PLATFORM")
+ ![PLATFORM](https://raw.githubusercontent.com/samelamin/samelamin.github.io/master/img/platform.png "PLATFORM")
 
- ![DATA LAKE](https://github.com/samelamin/samelamin.github.io/blob/master/img/datalake.png "DATA LAKE")
+ ![DATA LAKE](https://raw.githubusercontent.com/samelamin/samelamin.github.io/master/img/datalake.png "DATA LAKE")
 
  
 
@@ -175,22 +175,22 @@ we add a resource to the code to say that we expect the V1 schema to be
 
 We then read in the JSON while applying the schema like so: 
 
-  ```scala
-  
-   val actualInputVersion = 1
-   val jobName = "SampleJSONRawExtract"
-   val json_schema_string = Source.fromInputStream(transform.getClass.getResourceAsStream(s"${jobName}/$actualInputVersion.json")).mkString
-   val schema = DataType.fromJson(json_schema_string) match {case s:StructType => s}
-	
-   val df = spark.read
-        .schema(schema)
-        .json(pathToJSONFile)
-		
-    df.write.parquet(pathToWriteParquetTo)
-    
-  }
+```scala
 
-  ``` 
+val actualInputVersion = 1
+val jobName = "SampleJSONRawExtract"
+val json_schema_string = Source.fromInputStream(transform.getClass.getResourceAsStream(s"${jobName}/$actualInputVersion.json")).mkString
+val schema = DataType.fromJson(json_schema_string) match {case s:StructType => s}
+
+val df = spark.read
+	.schema(schema)
+	.json(pathToJSONFile)
+
+df.write.parquet(pathToWriteParquetTo)
+
+}
+
+``` 
   
   
   
@@ -199,9 +199,8 @@ We then read in the JSON while applying the schema like so:
   And ofcourse we have to ensure that any changes to the code do not miss any data so below is a sample test to ensure the number of rows stay the same after processing
   
   
-  
-    ```scala
-  package com.bddsample
+```scala
+package com.bddsample
 import com.holdenkarau.spark.testing.DataFrameSuiteBase
 import org.apache.spark.sql.SaveMode
 import org.scalatest.Matchers._
@@ -250,7 +249,7 @@ class RawExtractTests extends FeatureSpec with GivenWhenThen with DataFrameSuite
     }
   }
 }
-  ```   
+```   
   
   
  So to summarise the very first step we do is extract the raw data, ensure the data is in the right format by applying a schema over it and then save it back to parquet.
